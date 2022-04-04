@@ -1,44 +1,73 @@
+# This is a PHP [ULID](https://github.com/ulid/spec) package
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/support-ukraine.svg?t=1" />](https://supportukrainenow.org)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/guifelix/ulid.svg?style=flat-square)](https://packagist.org/packages/guifelix/ulid)
+[![Tests](https://github.com/guifelix/ulid/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/guifelix/ulid/actions/workflows/run-tests.yml)
+[![Total Downloads](https://img.shields.io/packagist/dt/guifelix/ulid.svg?style=flat-square)](https://packagist.org/packages/guifelix/ulid)
 
-# :package_description
+PHP Library to use ULID on your application.
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/:vendor_slug/:package_slug.svg?style=flat-square)](https://packagist.org/packages/:vendor_slug/:package_slug)
-[![Tests](https://github.com/:vendor_slug/:package_slug/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/:vendor_slug/:package_slug/actions/workflows/run-tests.yml)
-[![Total Downloads](https://img.shields.io/packagist/dt/:vendor_slug/:package_slug.svg?style=flat-square)](https://packagist.org/packages/:vendor_slug/:package_slug)
-<!--delete-->
----
-This package can be used as to scaffold a framework agnostic package. Follow these steps to get started:
-
-1. Press the "Use template" button at the top of this repo to create a new repo with the contents of this skeleton
-2. Run "php ./configure.php" to run a script that will replace all placeholders throughout all the files
-3. Have fun creating your package.
-4. If you need help creating a package, consider picking up our <a href="https://laravelpackage.training">Laravel Package Training</a> video course.
----
-<!--/delete-->
-This is where your description should go. Try and limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/:package_name.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/:package_name)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+> - 128-bit compatibility with UUID
+> - 1.21e+24 unique ULIDs per millisecond
+> - Lexicographically sortable!
+> - Canonically encoded as a 26 character string, as opposed to the 36 character UUID
+> - [Uses Crockford's base32 for better efficiency and readability (5 bits per character)](https://github.com/ulid/spec#encoding)
+> - Case insensitive
+> - No special characters (URL safe)
+> - Monotonic sort order (correctly detects and handles the same millisecond)
 
 ## Installation
 
 You can install the package via composer:
 
 ```bash
-composer require :vendor_slug/:package_slug
+composer require guifelix/php-ulid
 ```
 
 ## Usage
 
+### Generate
 ```php
-$skeleton = new VendorName\Skeleton();
-echo $skeleton->echoPhrase('Hello, VendorName!');
+use Guifelix\Ulid;
+
+$ulid = Ulid::generate(); // Accept boolean as a parameter for lowercase;
+
+echo (string) $ulid; //0001EH8YAEP8CXP4AMWCHHDBHJ
+echo $ulid->getTime(); //0001EH8YAE
+echo $ulid->getRandomness(); //P8CXP4AMWCHHDBHJ
+echo $ulid->isLowercase(); //false
+echo $ulid->toTimestamp(); //1561622862
+```
+
+### Generate from timestamp
+```php
+use Guifelix\Ulid;
+
+$ulid = Ulid::fromTimestamp(1561622862); // Accept boolean as a second parameter for lowercase;
+
+echo (string) $ulid; //0001EH8YAEP8CXP4AMWCHHDBHJ
+```
+### Generate from string (doesn't increment randomness)
+```php
+use Guifelix\Ulid;
+
+$ulid = Ulid::fromString('0001EH8YAEP8CXP4AMWCHHDBHJ'); // Accept boolean as a second parameter for lowercase;
+
+echo (string) $ulid; //0001EH8YAEP8CXP4AMWCHHDBHJ
+```
+
+### Validate
+```php
+use Guifelix\Ulid;
+
+Ulid::validate('8ZZZZZZZZZP8CXP4AMWCHHDBHI'); // Case insensitve
+/**
+ * validate Length, Crockford Characters and Time
+ * Throws
+ *  - InvalidUlidLengthException
+ *  - InvalidUlidCharException
+ *  - InvalidUlidTimestampException <- Max timestamp is 7ZZZZZZZZZ (281474976710655) or until the year 10889 AD :)
+ *  - InvalidUlidException
+ * /
 ```
 
 ## Testing
@@ -53,7 +82,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 
 ## Contributing
 
-Please see [CONTRIBUTING](https://github.com/spatie/.github/blob/main/CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING](https://github.com/guifelix/ulid/.github/blob/main/CONTRIBUTING.md) for details.
 
 ## Security Vulnerabilities
 
@@ -61,7 +90,8 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [:author_name](https://github.com/:author_username)
+- [Robin van der Vleuten](https://github.com/robinvdvleuten/php-ulid) - I have used most of his code for this package
+- [Guilherme Maciel](https://github.com/guifelix)
 - [All Contributors](../../contributors)
 
 ## License
