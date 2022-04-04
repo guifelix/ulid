@@ -35,6 +35,3 @@ jobs:
 
       - name: Execute unit tests
         run: vendor/bin/pest --coverage-text
-
-      - name: "Execute mutation tests"
-        run: "vendor/bin/infection --test-framework=pest"
