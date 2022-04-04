@@ -11,8 +11,8 @@
 
 namespace Guifelix\Ulid;
 
-use Guifelix\Ulid\Exception\InvalidUlidException;
 use Guifelix\Ulid\Exception\InvalidUlidCharException;
+use Guifelix\Ulid\Exception\InvalidUlidException;
 use Guifelix\Ulid\Exception\InvalidUlidLengthException;
 use Guifelix\Ulid\Exception\InvalidUlidTimestampException;
 
@@ -43,6 +43,7 @@ class Ulid
     public static function fromString(string $ulid, bool $lowercase = false): self
     {
         static::validate($ulid);
+
         return new static(
             time: substr($ulid, 0, static::TIME_LENGTH),
             randomness: substr($ulid, static::TIME_LENGTH, static::RANDOM_LENGTH),
@@ -182,7 +183,7 @@ class Ulid
     private static function validateTime(string $ulid): bool
     {
         $timestamp = static::decodeTime(substr($ulid, 0, static::TIME_LENGTH));
-        if (!is_int($timestamp) || $timestamp < 0 || $timestamp > static::TIME_MAX) {
+        if (! is_int($timestamp) || $timestamp < 0 || $timestamp > static::TIME_MAX) {
             throw new InvalidUlidTimestampException(
                 valid_min: 0,
                 valid_max:static::TIME_MAX,
@@ -196,7 +197,7 @@ class Ulid
     private static function validateTimestamp($timestamp): bool
     {
         if (
-            !is_int($timestamp) ||
+            ! is_int($timestamp) ||
             (is_int($timestamp) && ($timestamp < 0 || $timestamp > static::TIME_MAX))
         ) {
             throw new InvalidUlidTimestampException(

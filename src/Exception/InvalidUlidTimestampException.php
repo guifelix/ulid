@@ -26,7 +26,7 @@ class InvalidUlidTimestampException extends \RangeException
     ) {
         $final_message = "Invalid ULID character.";
 
-        if (!is_null($valid_min) && !is_null($valid_max)) {
+        if (! is_null($valid_min) && ! is_null($valid_max)) {
             $final_message .= " Valid: $valid_min to $valid_max.";
         }
 

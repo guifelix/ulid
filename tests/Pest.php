@@ -9,26 +9,32 @@
  * file that was distributed with this source code.
  */
 
-use Guifelix\Ulid\Ulid;
 use Guifelix\Ulid\Exception\InvalidUlidCharException;
 use Guifelix\Ulid\Exception\InvalidUlidLengthException;
 use Guifelix\Ulid\Exception\InvalidUlidTimestampException;
+use Guifelix\Ulid\Ulid;
 
-it('generates uppercase ULID by default', fn () =>
+it(
+    'generates uppercase ULID by default',
+    fn () =>
     expect((string) $ulid)->toMatch('/[0-9][A-Z]/')
     ->and($ulid->isLowercase())->toBeFalse()
 )->with(fn () => Ulid::generate());
 
-it('generates lowercase ULID when set', fn ($ulid) =>
+it(
+    'generates lowercase ULID when set',
+    fn ($ulid) =>
     expect((string) $ulid)->toMatch('/[0-9][a-z]/')
     ->and($ulid->isLowercase())->toBeTrue()
 )->with(fn () => Ulid::generate(true));
 
-it('generates 26 character long ULID', fn ($ulid) =>
+it(
+    'generates 26 character long ULID',
+    fn ($ulid) =>
     expect((string)$ulid)->toHaveLength(26)
 )->with(fn () => Ulid::generate());
 
-it('tests Randomness by generating multiple ULIDs', function(){
+it('tests Randomness by generating multiple ULIDs', function () {
     $a = Ulid::generate();
     $b = Ulid::generate();
 
@@ -45,7 +51,7 @@ it('tests Randomness by generating multiple ULIDs', function(){
     expect($a->getRandomness())->not->toBe($b->getRandomness());
 });
 
-it('generates lexicographically sortable ULIDs', function(){
+it('generates lexicographically sortable ULIDs', function () {
     $a = Ulid::generate();
     microtime();
     $b = Ulid::generate();
@@ -67,15 +73,21 @@ it('generates from lowercase string')
     ->and('01F3HFE5ANK3KSG1BKVE66AEYM')->toEqual((string) Ulid::fromString('01f3hfe5ank3ksg1bkve66aeym', false))
     ->and('01f3hfe5ank3ksg1bkve66aeym')->toEqual((string) Ulid::fromString('01f3hfe5ank3ksg1bkve66aeym', true));
 
-it('it throws exception on invalid character and valid length', fn () =>
+it(
+    'it throws exception on invalid character and valid length',
+    fn () =>
     Ulid::fromString('not-valid-ulid-with-length')
 )->throws(InvalidUlidCharException::class);
 
-it('it throws exception on invalid character and invalid length', fn () =>
+it(
+    'it throws exception on invalid character and invalid length',
+    fn () =>
     Ulid::fromString("01F3HFE5ANK3KSG1BKVE66AEYM\n")
 )->throws(InvalidUlidLengthException::class);
 
-it('it throws exception on valid character and invalid length', fn () =>
+it(
+    'it throws exception on valid character and invalid length',
+    fn () =>
     Ulid::fromString('000')
 )->throws(InvalidUlidLengthException::class);
 
@@ -91,7 +103,9 @@ dataset('invalid crockford character', [
     'U' => ['0001EH8YAEP8CXP4AMWCHHDBHU', true],
 ]);
 
-it('it throws exception on invalid ULID char', fn ($ulid, $case) =>
+it(
+    'it throws exception on invalid ULID char',
+    fn ($ulid, $case) =>
     Ulid::fromString($ulid, $case)
 )->throws(InvalidUlidCharException::class)
     ->with('invalid crockford character');
